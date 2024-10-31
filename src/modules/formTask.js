@@ -5,6 +5,12 @@ export function createformTask() {
     div.classList.add("formTaskContainer");
     div.innerHTML = `
         <form id="taskForm">
+        <label for="project">Projects:</label>
+    <select id="project" name="project">
+    <option value="general">General</option>
+    </select>
+    <br><br>
+    
     <label for="title">Title:</label>
     <input type="text" id="title" name="title" required>
     <br><br>
@@ -42,7 +48,11 @@ export function createformTask() {
     btnSubmitTask.addEventListener("click", function (event) {
         event.preventDefault();
         
-        const task = createTask(document.getElementById('title').value, document.getElementById('description').value, document.getElementById('dueDate').value, document.getElementById('priority').value, document.getElementById('completed').checked);
+        const task = createTask(document.getElementById('title').value, 
+        document.getElementById('description').value, 
+        document.getElementById('dueDate').value, 
+        document.getElementById('priority').value, 
+        document.getElementById('completed').checked);
 
         console.log(task);
         // Aquí podrías llamar a una función para guardar en localStorage, como saveTasks(task)
