@@ -1,8 +1,11 @@
+import { format } from "date-fns";
+
+
 class Task {
     constructor(title, description, dueDate, priority, checkList) {
         this._title = title === "" ? "Undefined Task" : title;
         this._description = description === "" ? "Undefined Description" : description;
-        this._dueDate = dueDate === "" ? new Date() : dueDate;
+        this._dueDate = dueDate === "" ? format(new Date(), 'yyyy-MM-dd') : dueDate;
         this._priority = priority === "" ? "Undefined Priority" : priority;
         this._checkList = typeof checkList === 'boolean' ? checkList : false;
     }
