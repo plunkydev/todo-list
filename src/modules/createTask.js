@@ -2,12 +2,13 @@ import { format } from "date-fns";
 
 
 class Task {
-    constructor(title, description, dueDate, priority, checkList) {
+    constructor(title, description, dueDate, priority, checkList, project) {
         this._title = title === "" ? "Undefined Task" : title;
         this._description = description === "" ? "Undefined Description" : description;
         this._dueDate = dueDate === "" ? format(new Date(), 'yyyy-MM-dd') : dueDate;
         this._priority = priority === "" ? "Undefined Priority" : priority;
         this._checkList = typeof checkList === 'boolean' ? checkList : false;
+        this._project = project;
     }
     get title() {
         return this._title;
@@ -23,6 +24,9 @@ class Task {
     }
     get checkList() {
         return this._checkList;
+    }
+    get project() {
+        return this._project;
     }
 
     set title(value) {
@@ -40,9 +44,12 @@ class Task {
     set checkList(value) {
         this._checkList = typeof value === 'boolean' ? value : false;
     }
+    set project(value) {
+        this._project = value;
+    }
 }
 
-export function createTask(title, description, dueDate, priority, checkList) {
-    let task = new Task(title, description, dueDate, priority, checkList);
+export function createTask(title, description, dueDate, priority, checkList, project) {
+    let task = new Task(title, description, dueDate, priority, checkList, project);
     return task;
 };
