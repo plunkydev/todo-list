@@ -8,7 +8,7 @@ class Task {
         this._dueDate = dueDate === "" ? format(new Date(), 'yyyy-MM-dd') : dueDate;
         this._priority = priority === "" ? "Undefined Priority" : priority;
         this._checkList = typeof checkList === 'boolean' ? checkList : false;
-        this._project = project;
+        this._project = project === "" ? 'general' : project;
     }
     get title() {
         return this._title;
