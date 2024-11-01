@@ -52,13 +52,15 @@ export function createformTask() {
         document.getElementById('description').value, 
         document.getElementById('dueDate').value, 
         document.getElementById('priority').value, 
-        document.getElementById('completed').checked);
+        document.getElementById('completed').checked, 
+        document.getElementById('project').value);
 
         console.log(task);
         // Aquí podrías llamar a una función para guardar en localStorage, como saveTasks(task)
 
         // Limpiar el formulario después de enviarlo
         document.getElementById('taskForm').reset();
+        //content.removeChild(div);
     }
     );
 };
