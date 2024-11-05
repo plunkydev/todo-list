@@ -3,8 +3,7 @@ import { createTask } from './createTask'
 //check if there is data from the app, if not create it by default
 export function thereIsData() {
     if (!localStorage.getItem('generalTaskData')) {
-        const data = createTask('', '', '', '', false, '')
-        localStorage.setItem('generalTaskData', JSON.stringify([data]));
+        localStorage.setItem('generalTaskData', JSON.stringify([]));
     }
 }
 
