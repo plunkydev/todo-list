@@ -18,3 +18,13 @@ export function saveProject(project) {
         localStorage.setItem('generalTaskData', JSON.stringify(data)); // Guardar data en localStorage
     }
 }
+
+export function getProjectsData() {
+    let getProjects = [];
+    data = JSON.parse(localStorage.getItem('generalTaskData'));
+    for (const project in data) {
+        getProjects.push(project)
+    }
+    return getProjects
+}
+
