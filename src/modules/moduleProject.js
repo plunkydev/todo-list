@@ -1,4 +1,5 @@
 import { saveProject } from "./StorageService"
+import { getProjectsData } from "./StorageService";
 export function createformProject() {
     const div = document.createElement("div");
     div.classList.add("formTaskContainer");
@@ -31,3 +32,17 @@ export function createformProject() {
     }
     );
 };
+
+export function showProjecs() {
+    const data = getProjectsData();
+    const list = document.getElementById('showProjects');
+    list.innerHTML = '';
+    for (const project of data) {
+        const elementList = document.createElement('li');
+        elementList.classList.add('projectsList');
+        elementList.innerText = project;
+        list.appendChild(elementList)
+    }
+}
+
+//showProjecs()
