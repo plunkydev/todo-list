@@ -1,5 +1,6 @@
 import { createTask } from "./createTask";
 import { getProjectsData } from "./StorageService";
+import { saveTask } from "./StorageService";
 
 export function createformTask() {
     const div = document.createElement("div");
@@ -60,8 +61,8 @@ export function createformTask() {
             document.getElementById('completed').checked, 
             document.getElementById('project').value
         );
-
-        console.log(task);
+        saveTask(task);
+        
         // Aquí podrías llamar a una función para guardar en localStorage, como saveTasks(task)
 
         // Limpiar el formulario después de enviarlo
