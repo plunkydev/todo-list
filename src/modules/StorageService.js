@@ -1,3 +1,5 @@
+import { showProjecs } from "./moduleProject";
+
 let data = null;
 
 // check if there is data from the app, if not create it by default
@@ -17,6 +19,7 @@ export function saveProject(project) {
         data[project] = []; // Agregar el nuevo proyecto a data
         localStorage.setItem('generalTaskData', JSON.stringify(data)); // Guardar data en localStorage
     }
+    showProjecs()
 }
 export function saveTask(task) {
     data = JSON.parse(localStorage.getItem('generalTaskData'));
