@@ -1,6 +1,7 @@
 import { createformTask } from "./modules/moduleTask"
 import { createformProject, showProjecs } from "./modules/moduleProject"
 import { thereIsData } from "./modules/StorageService"
+import "./styles.css"
 thereIsData();
 showProjecs();
 
