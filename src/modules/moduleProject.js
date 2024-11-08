@@ -13,7 +13,7 @@ export function createformProject() {
 </form>
     `;
     
-    const content = document.getElementById("content");
+    const content = document.getElementById("floatWindow");
     content.innerHTML = "";
     content.appendChild(div);
     const btnSubmitTask = document.getElementById('btnSubmitProject');
