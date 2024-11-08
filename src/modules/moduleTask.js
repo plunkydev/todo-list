@@ -41,7 +41,7 @@ export function createformTask() {
         </form>
     `;
     
-    const content = document.getElementById("content");
+    const content = document.getElementById("floatWindow");
     content.innerHTML = "";
     content.appendChild(div);
 
@@ -67,6 +67,7 @@ export function createformTask() {
 
         // Limpiar el formulario después de enviarlo
         document.getElementById('taskForm').reset();
+        content.removeChild(div);
     });
 }
 
