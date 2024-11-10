@@ -1,9 +1,10 @@
-import { createformTask } from "./modules/moduleTask"
+import { createformTask, showTasks } from "./modules/moduleTask"
 import { createformProject, showProjecs } from "./modules/moduleProject"
 import { thereIsData } from "./modules/StorageService"
 import "./styles.css"
 thereIsData();
 showProjecs();
+showTasks()
 
 // Añadir el evento al botón después de que se haya añadido al DOM
 const btnFormTask = document.getElementById("btnAddTask");
