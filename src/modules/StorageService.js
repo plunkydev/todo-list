@@ -1,18 +1,22 @@
 import { showProjecs } from "./moduleProject";
 
-let data = null;
-
 // check if there is data from the app, if not create it by default
 export function thereIsData() {
+    let datos = null;
     if (!localStorage.getItem('generalTaskData')) {
         localStorage.setItem('generalTaskData', JSON.stringify({general: []}));
-        data = {};
+        datos = JSON.parse(localStorage.getItem('generalTaskData'));
+        return datos 
+    } else {
+        datos = JSON.parse(localStorage.getItem('generalTaskData'));
+        return datos 
     }
 }
 
+let data = thereIsData();
+
 export function saveProject(project) {
     // Verificar si el proyecto ya existe en data
-    data = JSON.parse(localStorage.getItem('generalTaskData'));
     if (data.hasOwnProperty(project)) {
         alert(`${project} Already exists`);
     } else {
@@ -22,7 +26,6 @@ export function saveProject(project) {
     showProjecs()
 }
 export function saveTask(task) {
-    data = JSON.parse(localStorage.getItem('generalTaskData'));
     if (data.hasOwnProperty(task.project)) {
         data[task.project].push(task)
         localStorage.setItem('generalTaskData', JSON.stringify(data));
@@ -31,10 +34,21 @@ export function saveTask(task) {
 
 export function getProjectsData() {
     let getProjects = [];
-    data = JSON.parse(localStorage.getItem('generalTaskData'));
     for (const project in data) {
         getProjects.push(project)
     }
     return getProjects
 }
 
+export function getAllTasksData() {
+    const allTasks = [];
+    for (const project in data) {
+        if (Array.isArray(data[project])) {
+            allTasks.push(...data[project]);
+        }
+    }
+    
+    return allTasks;
+}
+
+console.log(getAllTasksData())
