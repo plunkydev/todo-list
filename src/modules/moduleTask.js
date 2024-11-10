@@ -1,5 +1,5 @@
 import { createTask } from "./createTask";
-import { getProjectsData } from "./StorageService";
+import { getProjectsData, getAllTasksData } from "./StorageService";
 import { saveTask } from "./StorageService";
 
 export function createformTask() {
@@ -82,4 +82,34 @@ function agregarOpcionesAlSelect(opciones) {
         optionElement.textContent = opcion;
         selectElement.appendChild(optionElement);
     });
+}
+
+
+export function showTasks(prop = null) {
+    const tasks = getAllTasksData();
+
+    if (prop === null) {
+        const content = document.getElementById("content");
+        content.innerHTML = "";
+
+        for (let i = 0; i < tasks.length; i++) {
+            const div = document.createElement("div");
+            div.classList.add("taskContiner");
+            div.id = `task${i+1}`;
+            div.innerHTML = `
+                <p id="taskDate">${tasks[i]._dueDate}</p>
+                <h2 id="taskTitle">${tasks[i]._title}</h2>
+                <p id="taskDescription">${tasks[i]._description}</p>
+                <p id="taskPriority">${tasks[i]._priority}</p>
+                <button type="button" id="btnTaskEdit-${i}" class="taskBtn">Edit</button>
+                <button type="button" id="btnTaskRemove-${i}" class="taskBtn">Remove</button>
+                <button type="button" id="btnTaskCheckList-${i}" class="taskBtn">Done</button>
+            `;
+            content.appendChild(div)
+        }
+        
+    }
+
+
+    
 }
