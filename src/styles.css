@@ -1,14 +1,40 @@
+:root {
+    --bgBtnColor: #7a949f;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+form > * {
+    border-radius: 5px;
+}
 
 .appContainer {
-    height: 100vh;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: 90px repeat(4, 1fr) 90px;
     gap: 8px;
 }
-    
+
+.header,
+.taskContiner,
+.header,
+nav,
+footer,
+.floatWindowClass {
+    border: 1px solid #ffffff40;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+}
+
 .header {
-    height: 90px;
+    max-height: 90px;
     grid-column: span 4 / span 4;
 }
 
@@ -16,10 +42,27 @@
     grid-column: span 3 / span 3;
     grid-row: span 5 / span 5;
     grid-row-start: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 8px;
+}
+
+.taskContiner,
+.floatWindowClass {
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+.taskBtnContiner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
 footer {
-    height: 90px;
     grid-column: span 4 / span 4;
     grid-column-start: 1;
     grid-row-start: 7;
@@ -29,9 +72,14 @@ nav {
     grid-row: span 5 / span 5;
     grid-column-start: 4;
     grid-row-start: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 20px;
 }
 
 .floatWindowClass {
+    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -39,3 +87,59 @@ nav {
     z-index: 1000;
     border: 2px solid black;
 }
+
+
+nav > button, #btnSubmitTask, #btnSubmitProject, .projectsList, .taskBtn {
+    background: #fff;
+    color: #000;
+    border: 2px solid var(--bgBtnColor);
+    padding: 8px;
+    border-radius: 15px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+}
+
+nav > button:hover, #btnSubmitTask:hover, #btnSubmitProject:hover, .projectsList:hover,  .taskBtn:hover {
+    color: #fff;
+}
+
+nav > button::after, #btnSubmitTask::after, #btnSubmitProject::after, .projectsList::after, .taskBtn::after {
+    content: "";
+    background: var(--bgBtnColor);
+    position: absolute;
+    z-index: -1;
+    padding: 16px 20px;
+    display: block;
+    border-radius: 50%;
+    left: -50%;
+    right: -50%;
+    top: -150%;
+    bottom: -150%;
+    transform: scale(0, 0);
+    transition: all 0.4s ease;
+}
+
+nav > button:hover::after, #btnSubmitTask:hover::after, #btnSubmitProject:hover::after, .projectsList:hover::after, .taskBtn:hover::after {
+    transition: all 0.6s ease-out;
+    transform: scale(1, 1);
+}
+
+#showProjects {
+    display: grid;
+}
+
+.projectsList {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.deleteIcon:hover {
+    background-color: #fff;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
