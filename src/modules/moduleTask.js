@@ -1,5 +1,5 @@
 import { createTask } from "./createTask";
-import { getProjectsData, getAllTasksData } from "./StorageService";
+import { getProjectsData, getAllTasksData, deleteTaskById } from "./StorageService";
 import { saveTask } from "./StorageService";
 
 export function createformTask() {
@@ -81,10 +81,10 @@ export function createformTask() {
     });
 }
 
-// Función para agregar opciones al <select> usando el array de proyectos
+// Function to add options to the <select> using the projects array
 function agregarOpcionesAlSelect(opciones) {
     const selectElement = document.getElementById('project');
-    selectElement.innerHTML = ''; // Limpia cualquier opción previa
+    selectElement.innerHTML = '';
 
     opciones.forEach(opcion => {
         const optionElement = document.createElement('option');
@@ -98,31 +98,55 @@ function agregarOpcionesAlSelect(opciones) {
 export function showTasks(prop = null) {
     const tasks = getAllTasksData();
 
-    if (prop === null) {
-        const content = document.getElementById("content");
-        content.innerHTML = "";
+    // Filter tasks if a specific project is passed as an argument
+    const filteredTasks = prop ? tasks.filter(task => task._project === prop) : tasks;
 
-        for (let i = 0; i < tasks.length; i++) {
-            const div = document.createElement("div");
-            div.classList.add("taskContiner");
-            div.id = `task${i + 1}`;
-            div.innerHTML = `
-                <p id="taskDate"><strong>Do before: </strong>${tasks[i]._dueDate}</p>
-                <h2 id="taskTitle">${tasks[i]._title}</h2>
-                <p id="taskDescription">${tasks[i]._description}</p>
-                <p id="taskProject"><strong>Project:</strong> ${tasks[i]._project}</p>
-                <p id="taskPriority"><strong>Priority: </strong>${tasks[i]._priority}</p>
-                <div class="taskBtnContiner">
+    const content = document.getElementById("content");
+    content.innerHTML = "";
+
+    // Show filtered or all tasks if prop is null
+    for (let i = 0; i < filteredTasks.length; i++) {
+        const div = document.createElement("div");
+        div.classList.add("taskContiner");
+        div.id = `task${i + 1}`;
+        div.innerHTML = `
+            <p id="taskDate"><strong>Do before: </strong>${filteredTasks[i]._dueDate}</p>
+            <h2 id="taskTitle">${filteredTasks[i]._title}</h2>
+            <p id="taskDescription">${filteredTasks[i]._description}</p>
+            <p id="taskProject"><strong>Project:</strong> ${filteredTasks[i]._project}</p>
+            <p id="taskPriority"><strong>Priority: </strong>${filteredTasks[i]._priority}</p>
+            <div class="taskBtnContiner">
                 <button type="button" id="btnTaskEdit-${i}" class="taskBtn">Edit</button>
                 <button type="button" id="btnTaskRemove-${i}" class="taskBtn">Remove</button>
                 <button type="button" id="btnTaskCheckList-${i}" class="taskBtn">Done</button>
-                </div>
-            `;
-            content.appendChild(div)
-        }
+            </div>
+        `;
+        
+        // Agregar el contenedor al contenido principal
+        content.appendChild(div);
 
+        // Agregar event listeners a los botones
+        const editBtn = document.getElementById(`btnTaskEdit-${i}`);
+        const removeBtn = document.getElementById(`btnTaskRemove-${i}`);
+        const doneBtn = document.getElementById(`btnTaskCheckList-${i}`);
+
+        // Listener para el botón Editar
+        editBtn.addEventListener("click", () => {
+            console.log(`Editando tarea: ${filteredTasks[i]._title}`);
+            showTasks();
+        });
+
+        // Listener para el botón Eliminar
+        removeBtn.addEventListener("click", () => {
+            deleteTaskById(filteredTasks[i]._idData);
+            showTasks(prop); // Actualizar solo las tareas del proyecto actual
+        });
+        
+        // Listener para el botón Marcar como Hecho
+        doneBtn.addEventListener("click", () => {
+            console.log(`Tarea completada: ${filteredTasks[i]._title}`);
+            showTasks(prop); // Actualizar solo las tareas del proyecto actual
+        });
     }
-
-
-
 }
+
