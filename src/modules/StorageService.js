@@ -40,6 +40,13 @@ export function getProjectsData() {
     return getProjects
 }
 
+export function deleteProject(project) {
+    if (data.hasOwnProperty(project)) {
+        delete data[project];
+        localStorage.setItem('generalTaskData', JSON.stringify(data));
+    }
+}
+
 export function getAllTasksData() {
     const allTasks = [];
     for (const project in data) {
@@ -51,4 +58,18 @@ export function getAllTasksData() {
     return allTasks;
 }
 
-console.log(getAllTasksData())
+export function deleteTaskById(idData) {
+
+    for (const categoria in data) {
+        if (Array.isArray(data[categoria])) {
+            const index = data[categoria].findIndex(tarea => tarea._idData === idData);
+            
+            if (index !== -1) {
+                data[categoria].splice(index, 1);
+                localStorage.setItem('generalTaskData', JSON.stringify(data));
+                return;
+            }
+        }
+    }
+
+}
