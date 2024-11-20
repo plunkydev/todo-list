@@ -54,6 +54,7 @@ footer,
     flex-direction: column;
     justify-content: space-between;
     padding: 15px;
+    max-height: 542px;
 }
 
 .taskBtnContiner {
