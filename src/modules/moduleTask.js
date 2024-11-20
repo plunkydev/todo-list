@@ -1,5 +1,5 @@
 import { createTask } from "./createTask";
-import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted } from "./StorageService";
+import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted, todayTask } from "./StorageService";
 import { saveTask } from "./StorageService";
 
 export function createformTask() {
@@ -95,7 +95,7 @@ function agregarOpcionesAlSelect(opciones) {
 }
 
 
-export function showTasks(byProject = null, byComplete = null) {
+export function showTasks(byProject = null, byComplete = null, todayTasks = null) {
     const tasks = getAllTasksData();
     let filteredTasks;
 
@@ -108,6 +108,8 @@ export function showTasks(byProject = null, byComplete = null) {
         } else {
             filteredTasks = isCompleted(false);
         }
+    } else if(todayTasks === 'today') {
+        filteredTasks = todayTask();
     } else {
         filteredTasks = tasks;
     }
