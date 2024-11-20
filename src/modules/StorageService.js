@@ -1,5 +1,5 @@
 import { showProjecs } from "./moduleProject";
-import { format } from "date-fns";
+import { format, addDays, isWithinInterval, parseISO } from "date-fns";
 
 // check if there is data from the app, if not create it by default
 export function thereIsData() {
@@ -102,7 +102,6 @@ export function todayTask(params) {
                 for (const key in task) {
                     if (task[key] === today) {
                         todayTasks.push(task)
-                        console.log(task)
                     } 
                 }
             })
@@ -111,4 +110,23 @@ export function todayTask(params) {
     }
     
     return todayTasks;
+}
+
+export function nextSevenDaysTasks() {
+    const nextSevenDaysTasks = [];
+    const today = new Date();
+    const endDate = addDays(today, 7);
+
+    for (const project in data) {
+        if (Array.isArray(data[project])) {
+            data[project].forEach(task => {
+                const dueDate = parseISO(task._dueDate);
+                if (isWithinInterval(dueDate, { start: today, end: endDate })) {
+                    nextSevenDaysTasks.push(task);
+                }
+            });
+        }
+    }
+    
+    return nextSevenDaysTasks;
 }
