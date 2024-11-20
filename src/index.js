@@ -15,3 +15,5 @@ const btnComplete = document.getElementById("btnComplete");
 btnComplete.addEventListener("click", () => showTasks(null, "complete"));
 const btnNotComplete = document.getElementById("btnNotComplete");
 btnNotComplete.addEventListener("click", () => showTasks(null, 'not complete'));
+const btnTodayTasks = document.getElementById("btnTodayTasks");
+btnTodayTasks.addEventListener("click", () => showTasks(null, null, 'today'));
