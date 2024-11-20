@@ -1,5 +1,5 @@
 import { createTask } from "./createTask";
-import { getProjectsData, getAllTasksData, deleteTaskById } from "./StorageService";
+import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted } from "./StorageService";
 import { saveTask } from "./StorageService";
 
 export function createformTask() {
@@ -95,35 +95,58 @@ function agregarOpcionesAlSelect(opciones) {
 }
 
 
-export function showTasks(prop = null) {
+export function showTasks(byProject = null, byComplete = null) {
     const tasks = getAllTasksData();
+    let filteredTasks;
 
-    // Filter tasks if a specific project is passed as an argument
-    const filteredTasks = prop ? tasks.filter(task => task._project === prop) : tasks;
+    // Filtrar tareas si se pasa un proyecto específico como argumento
+    if (byProject) {
+        filteredTasks = tasks.filter(task => task._project === byProject);
+    } else if (byComplete) {
+        if (byComplete === 'complete') {
+            filteredTasks = isCompleted(true);
+        } else {
+            filteredTasks = isCompleted(false);
+        }
+    } else {
+        filteredTasks = tasks;
+    }
 
     const content = document.getElementById("content");
     content.innerHTML = "";
 
-    // Show filtered or all tasks if prop is null
+    // Mostrar tareas filtradas o todas las tareas según los parámetros
     for (let i = 0; i < filteredTasks.length; i++) {
+        const task = filteredTasks[i]; // Usar una referencia para más claridad
         const div = document.createElement("div");
         div.classList.add("taskContiner");
         div.id = `task${i + 1}`;
         div.innerHTML = `
-            <p id="taskDate"><strong>Do before: </strong>${filteredTasks[i]._dueDate}</p>
-            <h2 id="taskTitle">${filteredTasks[i]._title}</h2>
-            <p id="taskDescription">${filteredTasks[i]._description}</p>
-            <p id="taskProject"><strong>Project:</strong> ${filteredTasks[i]._project}</p>
-            <p id="taskPriority"><strong>Priority: </strong>${filteredTasks[i]._priority}</p>
-            <div class="taskBtnContiner">
+            <p id="taskDate-${i}"><strong>Do before: </strong>${task._dueDate}</p>
+            <h2 id="taskTitle-${i}">${task._title}</h2>
+            <p id="taskDescription-${i}">${task._description}</p>
+            <p id="taskProject-${i}"><strong>Project:</strong> ${task._project}</p>
+            <p id="taskPriority-${i}"><strong>Priority: </strong>${task._priority}</p>
+            <p id="taskCompleted-${i}"><strong>Completed: </strong><span id="isCompleted-${i}">No</span></p>
+            <div class="taskBtnContainer">
                 <button type="button" id="btnTaskEdit-${i}" class="taskBtn">Edit</button>
                 <button type="button" id="btnTaskRemove-${i}" class="taskBtn">Remove</button>
                 <button type="button" id="btnTaskCheckList-${i}" class="taskBtn">Done</button>
             </div>
         `;
-        
-        // Agregar el contenedor al contenido principal
+
+        // Añadir el contenedor al contenido principal
         content.appendChild(div);
+
+        // Verificar si la tarea está completada y actualizar la información de la interfaz
+        const completedElement = document.getElementById(`isCompleted-${i}`);
+        if (task._checkList) {
+            completedElement.innerHTML = '<strong>SI</strong>';
+            completedElement.style.color = '#6fd262'; // Verde para indicar completado
+        } else {
+            completedElement.innerHTML = '<strong>NO</strong>';
+            completedElement.style.color = '#ff0000'; // Rojo para indicar no completado
+        }
 
         // Agregar event listeners a los botones
         const editBtn = document.getElementById(`btnTaskEdit-${i}`);
@@ -132,21 +155,20 @@ export function showTasks(prop = null) {
 
         // Listener para el botón Editar
         editBtn.addEventListener("click", () => {
-            console.log(`Editando tarea: ${filteredTasks[i]._title}`);
+            console.log(`Editando tarea: ${task._title}`);
             showTasks();
         });
 
         // Listener para el botón Eliminar
         removeBtn.addEventListener("click", () => {
-            deleteTaskById(filteredTasks[i]._idData);
-            showTasks(prop); // Actualizar solo las tareas del proyecto actual
+            deleteTaskById(task._idData);
+            showTasks(byProject); // Actualizar solo las tareas del proyecto actual
         });
         
         // Listener para el botón Marcar como Hecho
         doneBtn.addEventListener("click", () => {
-            console.log(`Tarea completada: ${filteredTasks[i]._title}`);
-            showTasks(prop); // Actualizar solo las tareas del proyecto actual
+            console.log(`Tarea completada: ${task._title}`);
+            showTasks(byProject); // Actualizar solo las tareas del proyecto actual
         });
     }
 }
-
