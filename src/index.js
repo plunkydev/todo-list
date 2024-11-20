@@ -11,3 +11,7 @@ const btnFormTask = document.getElementById("btnAddTask");
 btnFormTask.addEventListener("click", createformTask);
 const btnFormProject = document.getElementById("addProject");
 btnFormProject.addEventListener("click", createformProject);
+const btnComplete = document.getElementById("btnComplete");
+btnComplete.addEventListener("click", () => showTasks(null, "complete"));
+const btnNotComplete = document.getElementById("btnNotComplete");
+btnNotComplete.addEventListener("click", () => showTasks(null, 'not complete'));
