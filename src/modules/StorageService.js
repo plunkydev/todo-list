@@ -1,4 +1,5 @@
 import { showProjecs } from "./moduleProject";
+import { format } from "date-fns";
 
 // check if there is data from the app, if not create it by default
 export function thereIsData() {
@@ -90,4 +91,24 @@ export function isCompleted(params) {
     }
     
     return completedTasks;
+}
+
+export function todayTask(params) {
+    const todayTasks = [];
+    const today = format(new Date(), 'yyyy-MM-dd')
+    for (const project in data) {
+        if (Array.isArray(data[project])) {
+            data[project].forEach(task => {
+                for (const key in task) {
+                    if (task[key] === today) {
+                        todayTasks.push(task)
+                        console.log(task)
+                    } 
+                }
+            })
+            
+        }
+    }
+    
+    return todayTasks;
 }
