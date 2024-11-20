@@ -73,3 +73,21 @@ export function deleteTaskById(idData) {
     }
 
 }
+
+export function isCompleted(params) {
+    const completedTasks = [];
+    for (const project in data) {
+        if (Array.isArray(data[project])) {
+            data[project].forEach(task => {
+                for (const key in task) {
+                    if (task[key] === params) {
+                        completedTasks.push(task)
+                    } 
+                }
+            })
+            
+        }
+    }
+    
+    return completedTasks;
+}
