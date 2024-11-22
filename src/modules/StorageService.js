@@ -131,7 +131,7 @@ export function nextSevenDaysTasks() {
     return nextSevenDaysTasks;
 }
 
-export function taskNotCompleted() {
+export function funUnfulfilledTask() {
     const pastDueTasks = [];
     const today = new Date();
 
