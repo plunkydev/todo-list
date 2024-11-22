@@ -1,5 +1,5 @@
 import { createTask } from "./createTask";
-import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted, todayTask, nextSevenDaysTasks } from "./StorageService";
+import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted, todayTask, nextSevenDaysTasks, funUnfulfilledTask } from "./StorageService";
 import { saveTask } from "./StorageService";
 
 export function createformTask() {
@@ -95,11 +95,11 @@ function agregarOpcionesAlSelect(opciones) {
 }
 
 
-export function showTasks(byProject = null, byComplete = null, todayTasks = null, nextDays = null) {
+export function showTasks(byProject = null, byComplete = null, todayTasks = null, nextDays = null, unfulfilledTask = null) {
     const tasks = getAllTasksData();
     let filteredTasks;
 
-    // Filtrar tareas si se pasa un proyecto específico como argumento
+    // Filter tasks if a specific project is passed as an argument
     if (byProject) {
         filteredTasks = tasks.filter(task => task._project === byProject);
     } else if (byComplete) {
@@ -112,9 +112,11 @@ export function showTasks(byProject = null, byComplete = null, todayTasks = null
         filteredTasks = todayTask();
     } else if(nextDays === 'next7Days') {
         filteredTasks = nextSevenDaysTasks();
+    } else if(unfulfilledTask === 'unfulfilledTask') {
+        filteredTasks = funUnfulfilledTask();
     } else {
         filteredTasks = tasks;
-    }
+    };
 
     const content = document.getElementById("content");
     content.innerHTML = "";
