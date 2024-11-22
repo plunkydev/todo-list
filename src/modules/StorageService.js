@@ -1,5 +1,5 @@
 import { showProjecs } from "./moduleProject";
-import { format, addDays, isWithinInterval, parseISO } from "date-fns";
+import { format, addDays, isWithinInterval, parseISO, isBefore } from "date-fns";
 
 // check if there is data from the app, if not create it by default
 export function thereIsData() {
@@ -129,4 +129,22 @@ export function nextSevenDaysTasks() {
     }
     
     return nextSevenDaysTasks;
+}
+
+export function taskNotCompleted() {
+    const pastDueTasks = [];
+    const today = new Date();
+
+    for (const project in data) {
+        if (Array.isArray(data[project])) {
+            data[project].forEach(task => {
+                const dueDate = parseISO(task._dueDate);
+                if (!task._checkList && isBefore(dueDate, today)) {
+                    pastDueTasks.push(task);
+                }
+            });
+        }
+    }
+
+    return pastDueTasks;
 }
