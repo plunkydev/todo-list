@@ -19,3 +19,5 @@ const btnTodayTasks = document.getElementById("btnTodayTasks");
 btnTodayTasks.addEventListener("click", () => showTasks(null, null, 'today'));
 const btnNext7Days = document.getElementById("btnNext7Days");
 btnNext7Days.addEventListener("click", () => showTasks(null, null, null, 'next7Days'));
+const btnUnfulfilledTask = document.getElementById("btnUnfulfilledTask");
+btnUnfulfilledTask.addEventListener("click", () => showTasks(null, null, null, null, 'unfulfilledTask'));
