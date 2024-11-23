@@ -74,6 +74,32 @@ export function deleteTaskById(idData) {
     }
 
 }
+export function getTaskById(idData) {
+    for (const categoria in data) {
+        if (Array.isArray(data[categoria])) {
+            const index = data[categoria].findIndex(tarea => tarea._idData === idData);
+            
+            if (index !== -1) {
+                const task = data[categoria][index];
+                return task;
+            }
+        }
+    }
+}
+
+export function updateTask(taskId, updatedTask) {
+    for (let project in data) {
+        if (data.hasOwnProperty(project)) {
+            const index = data[project].findIndex(task => task._idData === taskId);
+            if (index !== -1) {
+                data[project][index] = { ...data[project][index], ...updatedTask };
+                
+                localStorage.setItem('generalTaskData', JSON.stringify(data));
+                return;
+            }
+        }
+    }
+}
 
 export function isCompleted(params) {
     const completedTasks = [];
