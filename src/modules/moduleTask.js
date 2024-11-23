@@ -1,8 +1,16 @@
 import { createTask } from "./createTask";
-import { getProjectsData, getAllTasksData, deleteTaskById, isCompleted, todayTask, nextSevenDaysTasks, funUnfulfilledTask } from "./StorageService";
-import { saveTask } from "./StorageService";
+import { 
+    getProjectsData, 
+    getAllTasksData, 
+    deleteTaskById, 
+    isCompleted, 
+    todayTask, 
+    nextSevenDaysTasks, 
+    funUnfulfilledTask, 
+    getTaskById, 
+    saveTask, updateTask } from "./StorageService";
 
-export function createformTask() {
+export function createformTask(taskToEdit = null) {
     const floatWindow = document.getElementById("floatWindow");
     floatWindow.style.display = 'block';
     const div = document.createElement("div");
@@ -48,6 +56,20 @@ export function createformTask() {
     content.innerHTML = "";
     content.appendChild(div);
 
+    if (taskToEdit) {
+        document.getElementById('title').value = taskToEdit._title;
+        document.getElementById('description').value = taskToEdit._description;
+        document.getElementById('dueDate').value = taskToEdit._dueDate;
+        document.getElementById('priority').value = taskToEdit._priority;
+        document.getElementById('completed').checked = taskToEdit._checkList;
+        document.getElementById('project').value = taskToEdit._project;
+        
+        // Actualizar el contador de caracteres
+    /*  const maxLength = document.getElementById('description').getAttribute('maxlength');
+        const currentLength = taskToEdit.description.length;
+        document.getElementById('charCount').textContent = `\${maxLength - currentLength} caracteres restantes`; */
+    }
+
     // Llamar a getProjectsData para obtener los proyectos y poblar el select
     const proyectos = getProjectsData();
     agregarOpcionesAlSelect(proyectos);
@@ -73,7 +95,12 @@ export function createformTask() {
             document.getElementById('completed').checked,
             document.getElementById('project').value
         );
-        saveTask(task);
+
+        if (taskToEdit) {
+            updateTask(taskToEdit._idData, task)
+        } else {
+            saveTask(task);
+        }
         showTasks();
         document.getElementById('taskForm').reset();
         content.removeChild(div);
@@ -161,8 +188,9 @@ export function showTasks(byProject = null, byComplete = null, todayTasks = null
 
         // Listener para el botón Editar
         editBtn.addEventListener("click", () => {
-            console.log(`Editando tarea: ${task._title}`);
-            showTasks();
+            let taskToEdit = getTaskById(task._idData);
+            createformTask(taskToEdit)
+            console.log(taskToEdit);
         });
 
         // Listener para el botón Eliminar
