@@ -12,6 +12,11 @@ form > * {
     border-radius: 5px;
 }
 
+
+h1, footer {
+    text-align: center;
+}
+
 .appContainer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -28,7 +33,7 @@ footer,
     border: 1px solid #ffffff40;
     border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 10px 1px rgba(33, 33, 33, 0.25);
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
 }
@@ -132,6 +137,7 @@ nav > button:hover::after, #btnSubmitTask:hover::after, #btnSubmitProject:hover:
 
 #showProjects {
     display: grid;
+    row-gap: 7px;
 }
 
 .projectsList {
@@ -144,5 +150,10 @@ nav > button:hover::after, #btnSubmitTask:hover::after, #btnSubmitProject:hover:
     background-color: #fff;
     border-radius: 5px;
     z-index: 1000;
+}
+
+.clicked {
+    background: var(--bgBtnColor);
+    color: #fff;
 }
 
