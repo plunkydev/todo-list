@@ -40,7 +40,7 @@ export function createformProject() {
         list.innerHTML = '';
         for (const project of projectsData) {
             const elementList = document.createElement('li');
-            elementList.classList.add('projectsList');
+            elementList.classList.add('projectsList', 'clickable');
     
             elementList.innerText = project;
     
