@@ -1,4 +1,5 @@
 import { createTask } from "./createTask";
+import { parseISO, differenceInDays } from "date-fns";
 import { 
     getProjectsData, 
     getAllTasksData, 
@@ -10,7 +11,10 @@ import {
     getTaskById, 
     saveTask, updateTask } from "./StorageService";
 
-export function createformTask(taskToEdit = null) {
+
+    let currentListDisplayed;
+
+export function createformTask(taskToEdit = false) {
     const floatWindow = document.getElementById("floatWindow");
     floatWindow.style.display = 'block';
     const div = document.createElement("div");
@@ -63,11 +67,6 @@ export function createformTask(taskToEdit = null) {
         document.getElementById('priority').value = taskToEdit._priority;
         document.getElementById('completed').checked = taskToEdit._checkList;
         document.getElementById('project').value = taskToEdit._project;
-        
-        // Actualizar el contador de caracteres
-    /*  const maxLength = document.getElementById('description').getAttribute('maxlength');
-        const currentLength = taskToEdit.description.length;
-        document.getElementById('charCount').textContent = `\${maxLength - currentLength} caracteres restantes`; */
     }
 
     // Llamar a getProjectsData para obtener los proyectos y poblar el select
@@ -97,11 +96,12 @@ export function createformTask(taskToEdit = null) {
         );
 
         if (taskToEdit) {
+            deleteTaskById(taskToEdit._idData);
             updateTask(taskToEdit._idData, task)
-        } else {
-            saveTask(task);
+            showTasks(...currentListDisplayed);
         }
-        showTasks();
+        saveTask(task);
+        showTasks(...currentListDisplayed);
         document.getElementById('taskForm').reset();
         content.removeChild(div);
         floatWindow.style.display = 'none';
@@ -124,15 +124,15 @@ function agregarOpcionesAlSelect(opciones) {
 
 export function showTasks(byProject = null, byComplete = null, todayTasks = null, nextDays = null, unfulfilledTask = null) {
     const tasks = getAllTasksData();
-    let filteredTasks;
-
+    let filteredTasks = tasks;
+    currentListDisplayed = [byProject, byComplete, todayTasks, nextDays, unfulfilledTask];
     // Filter tasks if a specific project is passed as an argument
     if (byProject) {
         filteredTasks = tasks.filter(task => task._project === byProject);
     } else if (byComplete) {
         if (byComplete === 'complete') {
             filteredTasks = isCompleted(true);
-        } else {
+        } else if(byComplete === 'not complete'){
             filteredTasks = isCompleted(false);
         }
     } else if(todayTasks === 'today') {
@@ -148,61 +148,94 @@ export function showTasks(byProject = null, byComplete = null, todayTasks = null
     const content = document.getElementById("content");
     content.innerHTML = "";
 
-    // Mostrar tareas filtradas o todas las tareas según los parámetros
-    for (let i = 0; i < filteredTasks.length; i++) {
-        const task = filteredTasks[i]; // Usar una referencia para más claridad
-        const div = document.createElement("div");
-        div.classList.add("taskContiner");
-        div.id = `task${i + 1}`;
-        div.innerHTML = `
-            <p id="taskDate-${i}"><strong>Do before: </strong>${task._dueDate}</p>
-            <h2 id="taskTitle-${i}">${task._title}</h2>
-            <p id="taskDescription-${i}">${task._description}</p>
-            <p id="taskProject-${i}"><strong>Project:</strong> ${task._project}</p>
-            <p id="taskPriority-${i}"><strong>Priority: </strong>${task._priority}</p>
-            <p id="taskCompleted-${i}"><strong>Completed: </strong><span id="isCompleted-${i}">No</span></p>
-            <div class="taskBtnContainer">
-                <button type="button" id="btnTaskEdit-${i}" class="taskBtn">Edit</button>
-                <button type="button" id="btnTaskRemove-${i}" class="taskBtn">Remove</button>
-                <button type="button" id="btnTaskCheckList-${i}" class="taskBtn">Done</button>
-            </div>
-        `;
+// Mostrar tareas filtradas o todas las tareas según los parámetros
+for (let i = 0; i < filteredTasks.length; i++) {
+    const task = filteredTasks[i]; 
+    const div = document.createElement("div");
+    div.classList.add("taskContiner");
+    div.id = `task${i + 1}`;
+    div.innerHTML = `
+        <p id="taskDate-${i}"><strong>Do before: </strong>${task._dueDate}</p>
+        <h2 id="taskTitle-${i}">${task._title}</h2>
+        <p id="taskDescription-${i}">${task._description}</p>
+        <p id="taskProject-${i}"><strong>Project:</strong> ${task._project}</p>
+        <p id="taskPriority-${i}"><strong>Priority: </strong>${task._priority}</p>
+        <p id="taskCompleted-${i}"><strong>Completed: </strong><span id="isCompleted-${i}"></span></p>
+        <div class="taskBtnContainer">
+            <button type="button" id="btnTaskEdit-${i}" class="taskBtn">Edit</button>
+            <button type="button" id="btnTaskRemove-${i}" class="taskBtn">Remove</button>
+            <button type="button" id="btnTaskCheckList-${i}" class="taskBtn">Done</button>
+        </div>
+    `;
 
         // Añadir el contenedor al contenido principal
         content.appendChild(div);
 
-        // Verificar si la tarea está completada y actualizar la información de la interfaz
-        const completedElement = document.getElementById(`isCompleted-${i}`);
-        if (task._checkList) {
-            completedElement.innerHTML = '<strong>SI</strong>';
-            completedElement.style.color = '#6fd262'; // Verde para indicar completado
+    // Asignar color de fondo según la prioridad
+
+    switch (task._priority.toLowerCase()) {
+        case 'high':
+            div.style.backgroundColor = '#ff66667d'; // Rojo para prioridad alta
+            break;
+        case 'medium':
+            div.style.backgroundColor = '#ffcc6680'; // Naranja para prioridad media
+            break;
+        case 'low':
+            div.style.backgroundColor = '#99ff9980'; // Verde para prioridad baja
+            break;
+        default:
+            div.style.backgroundColor = '#ffffff'; // Gris para prioridad desconocida
+            break;
+    }
+
+            // Cambiar el color de fondo según la cercanía de la fecha límite usando date-fns
+            const dueDate = parseISO(task._dueDate);
+            const currentDate = new Date();
+            const timeDiff = differenceInDays(dueDate, currentDate); // Diferencia en días
+    
+    // Verificar si la tarea está completada y actualizar la información de la interfaz
+    const completedElement = document.getElementById(`isCompleted-${i}`);
+
+    if (task._checkList) {
+        completedElement.innerHTML = '<strong>SI</strong>';
+        completedElement.style.color = 'rgb(69 131 61)'; // Verde para indicar completado
+        div.style.backgroundColor = '#ffffff'; // Fondo gris para tareas completadas
+    } else {
+        if (timeDiff < 0) {
+            div.style.backgroundColor = 'rgb(255, 69, 69)'; // Fondo rojo para tareas vencidas
+            completedElement.style.color = '#ffffff';
+            task._checkList = null;
+            completedElement.innerHTML = '<strong>Unfulfilled Task!</strong>';
         } else {
             completedElement.innerHTML = '<strong>NO</strong>';
-            completedElement.style.color = '#ff0000'; // Rojo para indicar no completado
+            completedElement.style.color = 'rgb(217 55 55)'; // Rojo para indicar no completado
         }
-
-        // Agregar event listeners a los botones
-        const editBtn = document.getElementById(`btnTaskEdit-${i}`);
-        const removeBtn = document.getElementById(`btnTaskRemove-${i}`);
-        const doneBtn = document.getElementById(`btnTaskCheckList-${i}`);
-
-        // Listener para el botón Editar
-        editBtn.addEventListener("click", () => {
-            let taskToEdit = getTaskById(task._idData);
-            createformTask(taskToEdit)
-            console.log(taskToEdit);
-        });
-
-        // Listener para el botón Eliminar
-        removeBtn.addEventListener("click", () => {
-            deleteTaskById(task._idData);
-            showTasks(byProject); // Actualizar solo las tareas del proyecto actual
-        });
-        
-        // Listener para el botón Marcar como Hecho
-        doneBtn.addEventListener("click", () => {
-            console.log(`Tarea completada: ${task._title}`);
-            showTasks(byProject); // Actualizar solo las tareas del proyecto actual
-        });
     }
+
+    // Agregar event listeners a los botones
+    const editBtn = document.getElementById(`btnTaskEdit-${i}`);
+    const removeBtn = document.getElementById(`btnTaskRemove-${i}`);
+    const doneBtn = document.getElementById(`btnTaskCheckList-${i}`);
+
+    // Listener para el botón Editar
+    editBtn.addEventListener("click", () => {
+        let taskToEdit = getTaskById(task._idData);
+        createformTask(taskToEdit);
+        showTasks(...currentListDisplayed)
+    });
+    
+    // Listener para el botón Eliminar
+    removeBtn.addEventListener("click", () => {
+        deleteTaskById(task._idData);
+        showTasks(...currentListDisplayed);
+    });
+    
+    // Listener para el botón Marcar como Hecho
+    doneBtn.addEventListener("click", () => {
+        let taskToEdit = getTaskById(task._idData);
+        !taskToEdit._checkList ? taskToEdit._checkList = true : taskToEdit._checkList = false;
+        updateTask(taskToEdit._idData, taskToEdit);
+        showTasks(...currentListDisplayed);
+    });
+}
 }
